@@ -150,14 +150,26 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	MyStack2<int> iStack3 = MyStack2<int>();
 	iStack3.push(0);
-
 	iStack3.push(1);
 	iStack3.push(2);
 	iStack3.push(3);
+	iStack3.push(4);
+	iStack3.push(5);
+	MyStack2<int> iStack4 = MyStack2<int>();
+	iStack4.push(11);
+	iStack4.push(22);
+	iStack4.push(33);
+	iStack4.push(44);
+	
 	//iStack3.~MyStack2();
-	//MyStack2<int> iStack6 = MyStack2<int>(iStack3);
-	MyStack2<int> iStack6 = std::move(iStack3);
-	//iStack3 = iStack2;
+	//MyStack2<int> iStack6(iStack3);
+	//MyStack2<int> iStack6 = std::move(iStack3);
+	MyStack2<int> iStack6;
+	//iStack6 = std::move(iStack3);
+	//iStack6 = iStack3;//1
+	//iStack3 = iStack4;//2
+	iStack4 = iStack3;//3
+	
 	//Задание 3. Реализуйте шаблон очереди - MyQueue таким образом, чтобы 
 	//для хранения элементов использовался динамический массив (не указателей).
 	//При использовании массива следует учесть специфику очереди, то есть

@@ -124,7 +124,7 @@ public:
 
 	~MyStack2() {
 		while (pHead != nullptr) { 
-			Node* tmp = pHead;  //tmp = pHead; pHead = pHead->pNext; del...
+			Node* tmp = pHead;  
 			pHead = pHead->pNext;
 			delete tmp;
 		}		
@@ -166,7 +166,7 @@ public:
 			this->m_count = other.m_count;
 			this->pHead = new Node(other.pHead->m_data);
 			Node* tmp = this->pHead;
-			Node* other_tmp = other.pHead;
+			const Node* other_tmp = other.pHead;
 			for (int i = 1; i < m_count; i++) {
 				tmp->pNext = new Node(other_tmp->pNext->m_data);
 				tmp = tmp->pNext;
@@ -187,57 +187,49 @@ public:
 	MyStack2& operator= (const MyStack2& other) {
 		if (this != &other) {
 			if (other.m_count) {
-				if (m_count == other.m_count) {
-					Node* tmp = &pHead;
-					const Node* other_tmp = &other.pHead;
-					for (int i = 0; i < m_count; i++) {
+				Node* tmp = this->pHead;
+				const Node* other_tmp = other.pHead;
+				Node* tmp2 = nullptr;
+
+				if (this->m_count == other.m_count) {
+					for (int i = 1; i < m_count; i++) {
 						tmp->pNext->m_data = other_tmp->pNext->m_data;
 						tmp = tmp->pNext;
 						other_tmp = other_tmp->pNext;
 					}
-					return *this;
 				}
-				else if (m_count > other.m_count) {
-					Node* tmp = &pHead;
-					Node* tmp2;
-					Node* tmp3;
-					const Node* other_tmp = &other.pHead;
+				else if (this->m_count > other.m_count) {
+					//Node* tmp2;
+					Node* tmp3=nullptr;
 					for (int i=0; i < other.m_count; i++) {
-						tmp->pNext->m_data = other_tmp->pNext->m_data;
+						tmp->m_data = other_tmp->m_data;
 						tmp3 = tmp;
 						tmp = tmp->pNext;
-						other_tmp = other_tmp->pNext;
+						other_tmp = other_tmp->pNext;				
 					}
-					tmp = tmp->pNext;
-					for (int i=0; i < m_count; i++) {
+					for (int i=0; i < this->m_count-other.m_count; i++) {
 						tmp2 = tmp->pNext;
 						delete tmp;
 						tmp = tmp2;
 					}
-					tmp3->pNext->pNext = nullptr;
-					m_count = other.m_count;
-					return *this;
+					tmp3->pNext = nullptr;
+					this->m_count = other.m_count;
 				}
-				else if (m_count < other.m_count) {
-					Node* tmp = &pHead;
-					const Node* other_tmp = &other.pHead;
-					for (int i=0; i < m_count; i++) {
-						tmp->pNext->m_data = other_tmp->pNext->m_data;
+				else if (this->m_count < other.m_count) {
+					for (int i=0; i < this->m_count; i++) {
+						tmp->m_data = other_tmp->m_data;
+						tmp2=tmp;
 						tmp = tmp->pNext;
 						other_tmp = other_tmp->pNext;
 					}
-					for (int i=0; i < other.m_count; i++) {
-						tmp->pNext = new Node;
-						tmp->pNext->m_data = other_tmp->pNext->m_data;
+					tmp = tmp2;
+					for (int i=0; i < other.m_count-this->m_count; i++) {
+						tmp->pNext = new Node(other_tmp->m_data);
 						tmp = tmp->pNext;
 						other_tmp = other_tmp->pNext;
 					}
 					m_count = other.m_count;
-					//return *this;
 				}
-			}
-			else {
-				*this = MyStack();
 			}
 		}
 		return *this;
@@ -245,16 +237,11 @@ public:
 
 	MyStack2& operator=(MyStack2&& other) {
 		if (this != &other) {
-			if (other.m_size) {
-				this->~MyStack2();
-				m_size = other.m_count;
+			if (other.m_count) {
+				this->m_count = other.m_count;
+				this->pHead = other.pHead;
 				other.m_count = 0;
-				pHead.pNext = other.pHead.pNext;
-				other.pHead.pNext = nullptr;
-				//return *this;
-			}
-			else {
-				*this = MyStack();
+				other.pHead = nullptr;
 			}
 		}
 		return *this;
